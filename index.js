@@ -29,7 +29,7 @@ app.post("/api/users", async (req, res) => {
   try {
     const newUser = new User(req.body);
     await newUser.save();
-    res.status(201).json(newUser);
+    res.render("userRes.ejs");
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "An error occurred while saving the user." });
