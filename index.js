@@ -13,6 +13,7 @@ const dbUri = process.env.MONGODB_URI;
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
 
 mongoose.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -25,14 +26,29 @@ db.once("open", () => {
 const User = require("./models/user.js");
 
 app.post("/api/users", async (req, res) => {
-  console.log(req);
+  console.log("code", req.body);
   try {
     const newUser = new User(req.body);
+
     await newUser.save();
+
+    // res.status(201).json(newUser);
+
     res.render("userRes.ejs");
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "An error occurred while saving the user." });
+  }
+});
+
+app.get("/api/getUsers", async (req, res) => {
+  try {
+    const users = await User.find();
+    // res.status(201).json(users);
+    res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching users." });
   }
 });
 
